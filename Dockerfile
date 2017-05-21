@@ -1,25 +1,18 @@
 FROM php:7.1-fpm-alpine
 
-LABEL maintainer "Keng Susumpow"
+LABEL maintainer "Julian Kipka"
 
 # Build-time metadata as defined at http://label-schema.org
  ARG BUILD_DATE
  ARG VCS_REF
  ARG VERSION
  LABEL org.label-schema.build-date=$BUILD_DATE \
-       org.label-schema.name="Wordpress-FPM" \
-       org.label-schema.description="A Docker container for latest version of PHP-FPM and Wordpress." \
-       org.label-schema.url="https://www.opendream.co.th/" \
+       org.label-schema.name="FPM-FOR-WORDPRESS" \
+       org.label-schema.description="A Docker container for latest version of PHP-FPM for Wordpress." \
        org.label-schema.vcs-ref=$VCS_REF \
-       org.label-schema.vcs-url="https://github.com/opendream/wordpress-fpm" \
-       org.label-schema.vendor="Opendream Co., Ltd." \
+       org.label-schema.vcs-url="https://github.com/nedien/wordpress-fpm" \
        org.label-schema.version=$VERSION \
        org.label-schema.schema-version="1.0"
-
-ENV WP_ROOT /usr/src/wordpress
-ENV WP_VERSION 4.7.4
-ENV WP_SHA1 153592ccbb838cafa1220de9174ec965df2e9e1a
-ENV WP_DOWNLOAD_URL https://wordpress.org/wordpress-$WP_VERSION.tar.gz
 
 RUN apk add --no-cache --virtual .build-deps \
     autoconf build-base gcc imagemagick-dev libc-dev \
@@ -49,8 +42,3 @@ RUN { \
         echo 'opcache.fast_shutdown=1'; \
         echo 'opcache.enable_cli=1'; \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
-
-RUN curl -o wordpress.tar.gz -SL $WP_DOWNLOAD_URL \
-	  && echo "$WP_SHA1 *wordpress.tar.gz" | sha1sum -c - \
-	  && tar -xzf wordpress.tar.gz -C /usr/src/ \
-	  && rm wordpress.tar.gz
